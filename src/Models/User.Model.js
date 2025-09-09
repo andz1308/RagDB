@@ -2,13 +2,19 @@ const mongoose = require('mongoose');
 const Counter = require("../Models/Counter.Model");
 
 const { Schema } = mongoose;
-
 const userSchema = new Schema(
   {
     userId: { type: Number, unique: true },
     username: { type: String, required: true, unique: true, trim: true },
     password: { type: String },
-    email:    { type: String, required: true, unique: true },
+    email: { 
+      type: String, 
+      required: true, 
+      unique: true, 
+      trim: true,
+      lowercase: true,
+      match: [/^\S+@\S+\.\S+$/, "Email không hợp lệ"] 
+    },
     phone:    { type: String, default: '' },
     role:     { type: String, enum: ['ADMIN', 'CUSTOMER'], default: 'CUSTOMER' },
     isActive: { type: Boolean, default: true },
@@ -18,6 +24,7 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+
 
 // Tự động tăng userId khi tạo user mới
 userSchema.pre("save", async function (next) {
